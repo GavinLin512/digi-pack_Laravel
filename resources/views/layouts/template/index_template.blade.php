@@ -26,12 +26,12 @@
                 <ul class="navbar-nav">
                     <li class="nav-item active d-flex justify-content-center">
                         <button type="button" class="btn mr-3 mt-2 mt-lg-0">
-                            <a class="nav-link px-1 w-100" href="#">Blog <span class="sr-only">(current)</span></a>
+                            <a class="nav-link px-1 w-100" href="#">News <span class="sr-only">(current)</span></a>
                         </button>
                     </li>
                     <li class="nav-item d-flex justify-content-center">
                         <button type="button" class="btn mr-3 mt-2 mt-lg-0">
-                            <a class="nav-link d-flex justify-content-center  px-1 w-100" href="#">Protfolio</a>
+                            <a class="nav-link d-flex justify-content-center  px-1 w-100" href="{{ asset('/product') }}">Product</a>
                         </button>
                     </li>
                     <li class="nav-item d-flex justify-content-center  px-1 w-100">
@@ -45,7 +45,7 @@
                         </button>
                     </li>
                     <li class="nav-item d-flex justify-content-center ">
-                        <a class="nav-link d-flex" href="{{ asset('/cart-1') }}">
+                        <a class="nav-link d-flex" href="{{ asset('/cart/step-1') }}">
                             <i class="fas fa-shopping-cart mr-2"></i>
                         </a>
                         <div class="dropdown">
@@ -54,7 +54,7 @@
                                 <i class="fas fa-user-circle"></i>
                             </a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item login" href="{{ asset('/login') }}">Login</a>
+                                <a class="dropdown-item login" href="{{ asset('/index/login') }}">Login</a>
                             </div>
                         </div>
 
@@ -63,8 +63,16 @@
             </div>
         </div>
     </nav>
-
-    @yield('main')
+    <main>
+        @if (Session::has('message'))
+            <div class="container">
+                <div class="alert alert-success" role="alert">
+                    {{ Session::get('message') }}
+                </div>
+            </div>
+            @endif
+        @yield('main')
+    </main>
 
     <footer class="mt-5">
         <div class="container">
@@ -194,7 +202,7 @@
 
 
 
-    @yield('calc-js')
+    @yield('js')
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">

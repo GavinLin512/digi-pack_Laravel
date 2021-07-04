@@ -1,4 +1,4 @@
-@extends('template.index_template')
+@extends('layouts.template.index_template')
 
 @section('title', '首頁')
 

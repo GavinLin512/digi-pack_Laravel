@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\FrontController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,35 +26,67 @@ Route::get('/', function () {
 // Route::get('/cart/template', function () {
 //     return view('template.cart_template');
 // });
-
-Route::get('/index', function () {
-    return view('index');
+Route::prefix('/index')->group(function () {
+    Route::get('/', 'FrontController@index');
+    Route::get('/login', 'FrontController@login');
 });
 
-Route::get('/login', function () {
-    return view('login');
+Route::prefix('/product')->group(function () {
+    Route::get('/', 'FrontController@productIndex');
+
 });
 
-Route::get('/cart-1', function () {
-    return view(('cart.cart-1'));
+Route::prefix('/cart')->group(function () {
+    Route::get('/step-1', 'FrontController@cart_step_1');
+    Route::middleware(['shopping'])->group(function () {
+        Route::get('/step-2', 'FrontController@cart_step_2');
+        Route::post('/step-2/check', 'FrontController@paymentCheck');
+        Route::get('/step-3', 'FrontController@cart_step_3');
+        Route::post('/step-3/check', 'FrontController@shipmentCheck');
+    });
+    Route::get('/step-4', 'FrontController@cart_step_4');
+
+    // shopping cart
+    Route::post('/add', 'FrontController@add');
+    Route::post('/update', 'FrontController@update');
+    Route::post('delete', 'FrontController@delete');
+    Route::get('/content', 'FrontController@content');
+    Route::get('/clear', 'FrontController@clear');
 });
 
-Route::get('/cart-2', function () {
-    return view(('cart.cart-2'));
+
+
+
+
+
+Auth::routes();
+
+
+
+
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::prefix('/admin')->group(function () {
+    Route::prefix('/product')->group(function () {
+
+        Route::prefix('/category')->group(function () {
+            Route::get('/', 'ProductCategoryController@index');
+            Route::get('/create', 'ProductCategoryController@create');
+            Route::post('/store', 'ProductCategoryController@store');
+            Route::get('/edit/{id}', 'ProductCategoryController@edit');
+            Route::post('/update/{id}', 'ProductCategoryController@update');
+            Route::delete('/delete/{id}', 'ProductCategoryController@delete');
+        });
+
+        Route::prefix('/item')->group(function () {
+            Route::get('/', 'ProductController@index');
+            Route::get('/create', 'ProductController@create');
+            Route::post('/store', 'ProductController@store');
+            Route::get('/edit/{id}', 'ProductController@edit');
+            Route::post('/update/{id}', 'ProductController@update');
+            Route::delete('/delete/{id}', 'ProductController@delete');
+            Route::post('/deleteImage', 'ProductController@deleteImage');
+        });
+    });
 });
-
-Route::get('/cart-3', function () {
-    return view(('cart.cart-3'));
-});
-
-Route::get('/cart-4', function () {
-    return view(('cart.cart-4'));
-});
-
-
-
-
-
-
-
-

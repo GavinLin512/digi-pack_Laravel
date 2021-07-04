@@ -1,4 +1,4 @@
-@extends('template.cart_template')
+@extends('layouts.template.cart_template')
 
 @section('title', '購物頁面')
 
@@ -42,7 +42,30 @@
     <div class="col-12 title-2 mb-2 mt-3">
         <h3>訂單明細</h3>
     </div>
+    @foreach ($cartProducts as $product)
     <div class="col-12 product d-flex no-gutters ">
+
+        <div class="col-8 d-flex align-items-center">
+            <div class="col-2 d-flex">
+                <button class="btn btn-warning h-50 mt-3 mr-3 del-btn" data-id="{{ $product->id }}">X</button>
+                <img src="{{ asset($product->attributes->photo) }}" alt="">
+            </div>
+            <div class="col-9 ml-4">
+                <h5>{{ $product->name }}</h5>
+                {{-- <p class="mb-0"><small class="text-muted">#41551</small></p> --}}
+            </div>
+        </div>
+        <div class="col-4 d-flex justify-content-end align-items-center">
+            <button type="button" class="btn btn-sm minus">-</button>
+            <input type="number" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" id="count" value="{{ $product->quantity }}" data-price="{{$product->price}}" data-id="{{$product->id}}"
+                class="text-center mx-1" onchange="priceOnchange(this.id)">
+            <button type="button" class="btn btn-sm plus">+</button>
+            <small data-price="{{ $product->price }}" class="ml-2 price">${{ $product->price }}</small>
+        </div>
+    </div>
+    <hr class="my-3 w-100 hr">
+    @endforeach
+    {{-- <div class="col-12 product d-flex no-gutters ">
         <div class="col-8 d-flex align-items-center">
             <div class="col-2">
                 <img src="{{ asset('img/product-1.jpeg') }}" alt="">
@@ -98,7 +121,7 @@
             <small data-price="40.50" class="ml-2 price">$40.50</small>
         </div>
     </div>
-    <hr class="my-3 w-100">
+    <hr class="my-3 w-100"> --}}
     <div class="col-12 d-flex justify-content-end no-gutters">
         <div class="col-4">
             <div class="row w-100 d-flex justify-content-between">
@@ -121,11 +144,76 @@
     </div>
     <hr class="my-3 w-100">
     <div class="col-12 d-flex justify-content-between">
-        <p class="mb-0 d-flex align-items-center"><i class="fa fa-arrow-left text-sm pr-2"></i>返回購物</p>
-        <a class="btn btn-primary btn-lg px-5" href="{{ asset('/cart-2') }}" role="button">下一步</a>
+        <a class="mb-0 d-flex align-items-center" href="{{ asset('/product') }}"><i class="fa fa-arrow-left text-sm pr-2"></i>返回購物</a>
+        <a class="btn btn-primary btn-lg px-5" href="{{ asset('/cart/step-2') }}" role="button">下一步</a>
     </div>
 @endsection
 
-@section('calc-js')
+@section('js')
     <script src="{{ asset('js/cart-1.js') }}"></script>
+    <script>
+        // console.log(qqq());
+       function updateQty(element) {
+        var qtyArea = element.parentElement;
+        var input = qtyArea.querySelector('input');
+        // 轉成數字型態
+        var qty = Number(input.value);
+
+        var formData = new FormData();
+        formData.append('_token','{{csrf_token()}}');
+        formData.append('productId',input.getAttribute('data-id'));
+        formData.append('newQty',qty);
+        console.log(productQty);
+
+        fetch('/cart/update',{
+            'method':'post',
+            'body':formData
+        }).then(function (response) {
+            return response.text();
+        }).then(function (result) {
+            // if(result=="success"){
+            //     if(newQty < 1){
+            //         input.value = 1;
+            //     }else{
+            //         input.value = newQty;
+            //     }
+            //     var price = qtyArea.nextElementSibling;
+            //     price.innerText = '$ ' + (price.getAttribute('data-price') * input.value).toLocaleString();
+
+            //     updateShoppingCart();
+
+            // 可以呼叫另一個外連 js 的 function 更新購物車數量
+            updateData();
+            // }
+        })
+       }
+
+       var delBtns = document.querySelectorAll('.del-btn');
+       delBtns.forEach(function (delBtn) {
+           delBtn.addEventListener('click', function () {
+                var productId = this.getAttribute('data-id');
+
+                var formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('productId', productId);
+
+                var delElement = this;
+                var delHr = document.querySelectorAll('.hr');
+                console.log(delHr);
+                fetch('/cart/delete',{
+                    'method': 'POST',
+                    'body':formData
+                }).then(function (response) {
+                    return response.text();
+                }).then(function (result) {
+                    if(result == 'success'){
+                        delElement.parentElement.parentElement.parentElement.remove();
+                        delHr.remove();
+                        updateData();
+                    }
+                })
+           })
+
+       })
+    </script>
 @endsection

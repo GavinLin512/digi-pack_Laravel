@@ -119,6 +119,11 @@ main .cart-page input {
   border-style: solid;
 }
 
+main .cart-page #zip {
+  height: 38px;
+  margin-bottom: 12px;
+}
+
 main .cart-page input::-webkit-input-placeholder {
   color: #a0a8b3;
 }
@@ -233,4 +238,4 @@ footer .bg-b-footer .col-3 svg {
     max-width: 1536px;
   }
 }
-/*# sourceMappingURL=2021-04-23 Bootstrap(digi-pack) cart-3.css.map */
+/*# sourceMappingURL=cart-3.css.map */

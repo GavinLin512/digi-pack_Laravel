@@ -175,6 +175,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // shopping cart
+        Darryldecode\Cart\CartServiceProvider::class,
+        // model 自動 $fillable 套件
+        Krlove\EloquentModelGenerator\Provider\GeneratorServiceProvider::class,
     ],
 
     /*
@@ -226,6 +230,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Cart' => Darryldecode\Cart\Facades\CartFacade::class
 
     ],
 
